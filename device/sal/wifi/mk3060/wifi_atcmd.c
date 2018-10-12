@@ -160,6 +160,11 @@ static int get_mac_helper(char *mac)
         return -1;
     }
 
+    if (strstr(out, "WMAC") == NULL) {
+        LOGE(TAG, "Command %s: rsp failed.", AT_CMD_OBTAIN_MAC);
+        return -1;
+    }
+
     sscanf(out, "%*[^:]:%[^\r]", mac);
     LOGI(TAG, "mac result: %s\r\n", mac);
 
@@ -183,6 +188,11 @@ static int get_ip_stat_helper(hal_wifi_ip_stat_t *result)
 
     if (strstr(out, AT_RSP_FAIL)) {
         LOGE(TAG, "Command  %s executed with ERROR", AT_CMD_OBTAIN_IP);
+        return -1;
+    }
+
+     if (strstr(out, "WJAPIP") == NULL) {
+        LOGE(TAG, "Command  %s: rsp failed.", AT_CMD_OBTAIN_IP);
         return -1;
     }
 

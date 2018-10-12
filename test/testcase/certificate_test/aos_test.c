@@ -54,8 +54,8 @@
 #ifndef TEST_CONFIG_KV_ENABLED
 #define TEST_CONFIG_KV_ENABLED                  (1)
 #endif
-#if (TEST_CONFIG_KV_ENABLED > 0)
-#define TEST_CONFIG_KV_TIMES                    (10000)
+#if (TEST_CONFIG_KV_ENABLED > 0)   
+#define TEST_CONFIG_KV_TIMES                    (3)
 #endif
 
 /* yloop test */

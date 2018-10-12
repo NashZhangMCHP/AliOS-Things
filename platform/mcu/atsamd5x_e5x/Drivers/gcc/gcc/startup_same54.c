@@ -28,6 +28,7 @@
  */
 
 #include "same54.h"
+#include "atmel_start.h"
 
 /* Initialize segments */
 extern uint32_t _sfixed;
@@ -675,8 +676,61 @@ void Reset_Handler(void)
  */
 void Dummy_Handler(void)
 {
+        printf("Dummy_Handler\n");
 	while (1) {
 	}
+}
+
+// HardFault handler in C, with stack frame location and LR value extracted
+// from the assembly wrapper as input parameters
+void HardFault_Handler_C(uint32_t * hardfault_args, unsigned int lr_value)
+{
+	unsigned int stacked_r0;
+	unsigned int stacked_r1;
+	unsigned int stacked_r2;
+	unsigned int stacked_r3;
+	unsigned int stacked_r12;
+	unsigned int stacked_lr;
+	unsigned int stacked_pc;
+	unsigned int stacked_psr;
+	unsigned int cfsr;
+	unsigned int bus_fault_address;
+	unsigned int memmanage_fault_address;
+	
+	bus_fault_address       = SCB->BFAR;
+	memmanage_fault_address = SCB->MMFAR;
+	cfsr                    = SCB->CFSR;
+	
+	stacked_r0  = ((unsigned int) hardfault_args[0]);
+	stacked_r1  = ((unsigned int) hardfault_args[1]);
+	stacked_r2  = ((unsigned int) hardfault_args[2]);
+	stacked_r3  = ((unsigned int) hardfault_args[3]);
+	stacked_r12 = ((unsigned int) hardfault_args[4]);
+	stacked_lr  = ((unsigned int) hardfault_args[5]);
+	stacked_pc  = ((unsigned int) hardfault_args[6]);
+	stacked_psr = ((unsigned int) hardfault_args[7]);
+	
+	printf ("[HardFault]\r\n");
+	printf ("- Stack frame:\r\n");
+	printf (" R0  = 0x%08x\r\n", stacked_r0);
+	printf (" R1  = 0x%08x\r\n", stacked_r1);
+	printf (" R2  = 0x%08x\r\n", stacked_r2);
+	printf (" R3  = 0x%08x\r\n", stacked_r3);
+	printf (" R12 = 0x%08x\r\n", stacked_r12);
+	printf (" LR  = 0x%08x\r\n", stacked_lr);
+	printf (" PC  = 0x%08x\r\n", stacked_pc);
+	printf (" PSR = 0x%08x\r\n", stacked_psr);
+	printf ("- FSR/FAR:\r\n");
+	printf (" CFSR = 0x%08x\r\n", cfsr);
+	printf (" HFSR = 0x%08x\r\n", (unsigned int)SCB->HFSR);
+	printf (" DFSR = 0x%08x\r\n", (unsigned int)SCB->DFSR);
+	printf (" AFSR = 0x%08x\r\n", (unsigned int)SCB->AFSR);
+	if (cfsr & 0x0080) printf (" MMFAR = 0x%08x\r\n", memmanage_fault_address);
+	if (cfsr & 0x8000) printf (" BFAR = 0x%08x\r\n", bus_fault_address);
+	printf ("- Misc\r\n");
+	printf (" LR/EXC_RETURN= 0x%08x\r\n", lr_value);
+	
+	while(1); // endless loop
 }
 
 /**
@@ -684,6 +738,16 @@ void Dummy_Handler(void)
  */
 void Dummy_Handler2(void)
 {
-	while (1) {
-	}
+#if 0        
+    __asm (
+		"TST    LR, #4 \r\n" \
+		"ITE    EQ \r\n" \
+		"MRSEQ  R0, MSP \r\n" \
+		"MRSNE  R0, PSP \r\n" \
+		"MOV    R1, LR \r\n" \
+		"B      HardFault_Handler_C"
+	);
+#else
+        _reset_mcu();
+#endif        
 }

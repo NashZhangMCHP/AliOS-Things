@@ -535,9 +535,9 @@ static void dump_payload(uint8_t *p, uint32_t len)
  * This API can be used to send packet, without response required.
  *
  * AT stream format as below:
- *     [<header>,]data[,<tailer>]
+ *    <header>, [data], [tailer]
  *
- * In which, header and tailer is optional.
+ * In which, data and tailer is optional.
  */
 static int at_send_data_3stage_no_rsp(const char *header, const uint8_t *data,
                                       uint32_t len, const char *tailer)
@@ -554,8 +554,9 @@ static int at_send_data_3stage_no_rsp(const char *header, const uint8_t *data,
         return -1;
     }
 
-    if (!data || !len) {
-        return 0;
+    if (!header) {
+        LOGE(MODULE_NAME, "Invalid null header\n");
+        return -1;
     }
 
 #ifdef DEBUG
@@ -582,19 +583,22 @@ static int at_send_data_3stage_no_rsp(const char *header, const uint8_t *data,
         LOGD(MODULE_NAME, "Packet header sent: %s", header);
     }
 
+    if (data && len) {
 #ifdef HDLC_UART
-    if ((ret = hdlc_uart_send(&hdlc_encode_ctx, at._pstuart, (void *)data, len,
-                              at._timeout, true)) != 0)
+        if ((ret = hdlc_uart_send(&hdlc_encode_ctx, at._pstuart, (void *)data,
+                                  len, at._timeout, true)) != 0)
 #else
-    if ((ret = hal_uart_send(at._pstuart, (void *)data, len, at._timeout)) != 0)
+        if ((ret =
+               hal_uart_send(at._pstuart, (void *)data, len, at._timeout)) != 0)
 #endif
-    {
-        LOGE(MODULE_NAME, "uart send packet failed");
-        aos_mutex_unlock(&at.at_uart_send_mutex);
-        assert(0);
-        return -1;
+        {
+            LOGE(MODULE_NAME, "uart send packet failed");
+            aos_mutex_unlock(&at.at_uart_send_mutex);
+            assert(0);
+            return -1;
+        }
+        LOGD(MODULE_NAME, "Packet sent, len: %d", len);
     }
-    LOGD(MODULE_NAME, "Packet sent, len: %d", len);
 
     if (tailer) {
 #ifdef HDLC_UART
@@ -848,14 +852,14 @@ static void at_worker(void *arg)
 
     LOGD(MODULE_NAME, "at_work started.");
 
-    buf = aos_malloc(RECV_BUFFER_SIZE);
+    buf = aos_malloc(RECV_BUFFER_SIZE*2);
     if (NULL == buf) {
         LOGE(MODULE_NAME, "AT worker fail to malloc ,task exist \r\n");
         aos_task_exit(0);
         return;
     }
 
-    memset(buf, 0, RECV_BUFFER_SIZE);
+    memset(buf, 0, RECV_BUFFER_SIZE*2);
 
     while (true) {
         // read from uart and store buf
@@ -870,7 +874,7 @@ static void at_worker(void *arg)
 
         if (offset + 1 >= RECV_BUFFER_SIZE) {
             LOGE(MODULE_NAME, "Fatal error, no one is handling AT uart");
-            continue;
+            goto check_buffer;
         }
         buf[offset++] = c;
         buf[offset]   = 0;
@@ -884,7 +888,8 @@ static void at_worker(void *arg)
                 LOGD(MODULE_NAME, "AT! %s\r\n", oob->prefix);
                 if (oob->postfix == NULL) {
                     oob->cb(oob->arg, NULL, 0);
-                    memset(buf + offset - strlen(oob->prefix), 0, offset);
+                    memset(buf + offset - strlen(oob->prefix), 0,
+                           strlen(oob->prefix));
                     offset -= strlen(oob->prefix);
                 } else {
                     if (oob->reallen == 0) {
@@ -921,6 +926,7 @@ static void at_worker(void *arg)
                     }
                     /*oob data maybe more than buf size */
                     if (offset > (RECV_BUFFER_SIZE - 2)) {
+                        printf("at_worker: offset=%d\r\n", offset);
                         memset(buf, 0, offset);
                         offset = 0;
                     }

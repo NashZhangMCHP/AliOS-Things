@@ -17,7 +17,7 @@
 #define PRODUCT_SECRET          "M4yY1ggbRnWYXzU3"
 #define DEVICE_NAME             "test_3060_01"
 #define DEVICE_SECRET           "6BhvTPQqCEj48gIHChFQKCWgDjNnQX5f"
-#elif ON_PRE 
+#elif ON_PRE
 #define PRODUCT_KEY             "a1DQA90NlFe"
 #define PRODUCT_SECRET          "0VDRjoQAbieMcYyZ"
 #define DEVICE_NAME             "jaVam0S5dTq8XKUoI2NW"
@@ -43,16 +43,18 @@
 #define PRODUCT_SECRET          "Z9Ze6qgMrWgTOezW"
 #define DEVICE_NAME             "ESP8266_cxf01"
 #define DEVICE_SECRET           "K2pM9rSaQecgx8Vo31yjM6vmsXuQA8r9"
-#elif  MQTT_TEST
-#define PRODUCT_KEY             "yfTuLfBJTiL"
-#define DEVICE_NAME             "TestDeviceForDemo"
-#define DEVICE_SECRET           "fSCl9Ns5YPnYN8Ocg0VEel1kXFnRlV6c"
-#define PRODUCT_SECRET          ""
+#elif  MQTT_TEST // LED
+#warning "---- LED ----"
+#define PRODUCT_KEY             "a1iV8SYt8LM"
+#define PRODUCT_SECRET          "eCaBkXueelopdeCF"
+#define DEVICE_NAME             "LED"
+#define DEVICE_SECRET           "VGCFNHNNUP24efsr0d3RY1KAQQdRjmOD"
 #else
-#define PRODUCT_KEY             "a1AzoSi5TMc"
-#define PRODUCT_SECRET          "Z9Ze6qgMrWgTOezW"
-#define DEVICE_NAME             "test_light_03"
-#define DEVICE_SECRET           "oIdAOeech8fM7aHtq0QSvV1oSle30SxP"
+#warning "---- 3 tripple else ----"
+#define PRODUCT_KEY             "a1updcR21EW"
+#define PRODUCT_SECRET          "Kjuy1wPCHjxlkJuG"
+#define DEVICE_NAME             "Deng001"
+#define DEVICE_SECRET           "gpfm8nes71mTPl6V7N30QfKXY0JITgG5"
 #endif
 #endif
 
