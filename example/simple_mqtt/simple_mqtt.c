@@ -23,10 +23,17 @@
 #include <atparser.h>
 #endif
 
+#include "atmel_start.h"
 
+/*
 #define PRODUCT_KEY   "b1VxeCKSQeO"
 #define DEVICE_NAME   "simple"
 #define DEVICE_SECRET "x9D0k0DjwtYG734unBm0YYsyoMRxgCNR"
+*/
+
+#define PRODUCT_KEY             "a1b5qbk6A2U"
+#define DEVICE_NAME             "d4BP46LRJemfmptT4fAv"
+#define DEVICE_SECRET           "Ju8Lpr4lSKLTOPcQIGZjbwklzEcY1tJb"
 
 #define ALINK_BODY_FORMAT \
     "{\"id\":\"%d\",\"version\":\"1.0\",\"method\":\"%s\",\"params\":%s}"
@@ -59,12 +66,19 @@ static void handle_prop_set(void *pcontext, void *pclient,
     iotx_mqtt_topic_info_pt ptopic_info = (iotx_mqtt_topic_info_pt)msg->msg;
 
     // print topic name and topic message
-    LOG("----");
+    LOG("--prop_set--");
     LOG("Topic: '%.*s' (Length: %d)", ptopic_info->topic_len,
         ptopic_info->ptopic, ptopic_info->topic_len);
     LOG("Payload: '%.*s' (Length: %d)", ptopic_info->payload_len,
         ptopic_info->payload, ptopic_info->payload_len);
     LOG("----");
+
+    // Test code for LED conctrol
+    if (strstr(ptopic_info->payload, "ledon") != NULL) {
+        gpio_set_pin_level(LED0, false);
+    } else if (strstr(ptopic_info->payload, "ledoff") != NULL) {
+        gpio_set_pin_level(LED0, true);
+    }
 }
 
 /*
@@ -77,7 +91,7 @@ static void handle_prop_postrsp(void *pcontext, void *pclient,
     iotx_mqtt_topic_info_pt ptopic_info = (iotx_mqtt_topic_info_pt)msg->msg;
 
     // print topic name and topic message
-    LOG("----");
+    LOG("--prop_postrsp--");
     LOG("Topic: '%.*s' (Length: %d)", ptopic_info->topic_len,
         ptopic_info->ptopic, ptopic_info->topic_len);
     LOG("Payload: '%.*s' (Length: %d)", ptopic_info->payload_len,
