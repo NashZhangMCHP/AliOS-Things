@@ -56,6 +56,8 @@ iotx_mqtt_topic_info_t msg;
 
 int mqtt_setup(void);
 
+static void mqtt_publish_LightSwitch(void *pclient, bool onoff);
+
 /*
  * MQTT Subscribe handler
  * topic: ALINK_TOPIC_PROP_SET
@@ -78,6 +80,14 @@ static void handle_prop_set(void *pcontext, void *pclient,
         gpio_set_pin_level(LED0, false);
     } else if (strstr(ptopic_info->payload, "ledoff") != NULL) {
         gpio_set_pin_level(LED0, true);
+    }
+    // Second way: {"LightSwitch":0}, {"LightSwitch":1}
+    if (strstr(ptopic_info->payload, ":1") != NULL) {
+        gpio_set_pin_level(LED0, false);
+        mqtt_publish_LightSwitch(gpclient, 1);
+    } else if (strstr(ptopic_info->payload, ":0") != NULL) {
+        gpio_set_pin_level(LED0, true);
+        mqtt_publish_LightSwitch(gpclient, 0);
     }
 }
 
@@ -153,6 +163,43 @@ static void mqtt_publish(void *pclient, char *payload)
     memset(msg_pub, 0, sizeof(msg_pub));
 
     sprintf(param, "{\"up\":\"%s\"}", payload);
+    int msg_len =
+      sprintf(msg_pub, ALINK_BODY_FORMAT, cnt, ALINK_METHOD_PROP_POST, param);
+    if (msg_len < 0) {
+        LOG("Error occur! Exit program");
+    }
+
+    msg.payload     = (void *)msg_pub;
+    msg.payload_len = msg_len;
+
+    rc = IOT_MQTT_Publish(pclient, ALINK_TOPIC_PROP_POST, &msg);
+    if (rc < 0) {
+        LOG("error occur when publish. %d", rc);
+    }
+
+    LOG("id: %u, publish msg: %s", (uint32_t)cnt, msg_pub);
+    cnt++;
+}
+
+/*
+ * MQTT publish, to fixed topic, alink protocol format
+ */
+static void mqtt_publish_LightSwitch(void *pclient, bool onoff)
+{
+    int  rc        = -1;
+    char param[64] = { 0 };
+
+    /* Initialize topic information */
+    memset(&msg, 0x0, sizeof(iotx_mqtt_topic_info_t));
+
+    msg.qos    = IOTX_MQTT_QOS0;
+    msg.retain = 0;
+    msg.dup    = 0;
+
+    memset(param, 0, sizeof(param));
+    memset(msg_pub, 0, sizeof(msg_pub));
+
+    sprintf(param, "{\"LightSwitch\":%d}", onoff);
     int msg_len =
       sprintf(msg_pub, ALINK_BODY_FORMAT, cnt, ALINK_METHOD_PROP_POST, param);
     if (msg_len < 0) {
