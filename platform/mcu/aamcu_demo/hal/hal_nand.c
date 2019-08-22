@@ -2,7 +2,7 @@
  * Copyright (C) 2015-2018 Alibaba Group Holding Limited
  */
 
-#include <hal/soc/soc.h>
+#include "aos/hal/nand.h"
 
 #ifdef HAL_NAND_MODULE_ENABLED
 

@@ -5,7 +5,7 @@
 #ifndef __BOARD__H_
 #define __BOARD__H_
 #define HARDWARE_REVISION "V1.0"
-#define MODEL             "aa"
+#define MODEL             "STM32F4"
 
 #ifdef BOOTLOADER
 #define STDIO_UART_BUADRATE 115200

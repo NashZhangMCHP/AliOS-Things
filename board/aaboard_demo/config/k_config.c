@@ -54,7 +54,7 @@ void krhino_init_hook(void)
 
 void krhino_start_hook(void)
 {
-#if (RHINO_CONFIG_TASK_SCHED_STATS > 0)
+#if (RHINO_CONFIG_SYS_STATS > 0)
     krhino_task_sched_stats_reset();
 #endif
 }
@@ -153,30 +153,6 @@ void aos_heap_set()
     g_mm_region[0].len   = heap_len;
 }
 #endif
-#endif
-
-#if (RHINO_CONFIG_MM_LEAKCHECK > 0 )
-extern int __bss_start__, __bss_end__, _sdata, _edata;
-void aos_mm_leak_region_init(void)
-{
-#if (RHINO_CONFIG_MM_DEBUG > 0)
-    krhino_mm_leak_region_init(&__bss_start__, &__bss_end__);
-    krhino_mm_leak_region_init(&_sdata, &_edata);
-#endif
-}
-#endif
-
-#if (RHINO_CONFIG_TASK_STACK_CUR_CHECK > 0)
-size_t soc_get_cur_sp()
-{
-    size_t sp = 0;
-#if defined (__GNUC__)&&!defined(__CC_ARM)
-    asm volatile(
-        "mov %0,sp\n"
-        :"=r"(sp));
-#endif
-    return sp;
-}
 #endif
 
 /*

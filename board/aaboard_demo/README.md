@@ -1,4 +1,4 @@
-## Over View
+## Overview
 This is a board demo for consulting, not a true realization.
 ## Feature of Board
 
@@ -23,19 +23,20 @@ Dir\File                                Description                             
 |-- aaboard_demo.icf         # linkscript file for iar                                              Y
 |-- aaboard_demo.ld          # linkscript file for gcc                                              Y
 |-- aaboard_demo.sct         # linkscript file for sct                                              Y
-|-- aaboard_demo.mk          # board makefile                                                       Y
+|-- aos.mk                   # board makefile                                                       Y
+|-- Config.in                # menuconfig component config                                          Y
 |-- ucube.py                 # config for CI autorun app                                            N
 ```
 
-## Board Hardware Resources:Introduce the hardware of the board, such as ram , rom and the number of uart , i2c, gpio and so on.
+## Board Hardware Resources
 
-## Pin Mapping: Describe the pin of the peripheral.
+## Pin Mapping
 
-## Driver Support: Describe the driver supported already.
+## Driver Support
 
-## Programming: Describe how to program the flash
+## Programming
 
-## Debugging: Describe how to debug the program
+## Debugging
 
 ## Update log
 

@@ -1,9 +1,10 @@
 /*
  * Copyright (C) 2015-2018 Alibaba Group Holding Limited
  */
-#include <hal/hal.h>
 
 #ifdef HAL_FLASH_MODULE_ENABLED
+
+#include "aos/hal/flash.h"
 
 hal_logic_partition_t *hal_flash_get_info(hal_partition_t pno)
 {

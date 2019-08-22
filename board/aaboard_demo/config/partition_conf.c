@@ -1,8 +1,8 @@
 /*
- * Copyright (C) 2015-2018 Alibaba Group Holding Limited
+ * Copyright (C) 2015-2017 Alibaba Group Holding Limited
  */
 
-#include "hal/soc/flash.h"
+#include "aos/hal/flash.h"
 
 /* Logic partition on flash devices */
 hal_logic_partition_t hal_partitions[HAL_PARTITION_MAX];

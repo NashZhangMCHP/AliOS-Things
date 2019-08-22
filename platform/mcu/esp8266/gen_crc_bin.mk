@@ -16,5 +16,4 @@ gen_crc_bin:
 	$(SETENV) ESP8266_NM=${NM} && \
     python ../../../platform/mcu/esp8266/tools/gen_appbin.py $(CLEANED_BUILD_STRING)$(RADIXPOINT)$(BINSTYPE_LOWER)$(LINK_OUTPUT_SUFFIX) 2 1 15 5 && \
 	$(CP) eagle.app.flash.bin $(OTA_BIN_OUTPUT_FILE) && \
-	$(RM) eagle.app.flash.bin eagle.app.v6.text.bin eagle.app.v6.data.bin eagle.app.v6.rodata.bin eagle.app.v6.irom0text.bin && \
-	python ../../../$(SCRIPTS_PATH)/ota_gen_md5_bin.py $(OTA_BIN_OUTPUT_FILE)
+	$(RM) eagle.app.flash.bin eagle.app.v6.text.bin eagle.app.v6.data.bin eagle.app.v6.rodata.bin eagle.app.v6.irom0text.bin

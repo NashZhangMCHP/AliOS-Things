@@ -2,7 +2,7 @@
  * Copyright (C) 2015-2018 Alibaba Group Holding Limited
  */
 
-#include <hal/hal.h>
+#include "aos/hal/i2c.h"
 
 #ifdef HAL_I2C_MODULE_ENABLED
 

@@ -2,7 +2,7 @@
  * Copyright (C) 2015-2018 Alibaba Group Holding Limited
  */
 
-#include <hal/hal.h>
+#include "aos/hal/uart.h"
 
 #ifdef HAL_UART_MODULE_ENABLED
 

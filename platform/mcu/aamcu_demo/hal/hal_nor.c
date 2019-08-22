@@ -2,7 +2,7 @@
  * Copyright (C) 2015-2018 Alibaba Group Holding Limited
  */
 
-#include <hal/soc/soc.h>
+#include "aos/hal/nor.h"
 
 #ifdef HAL_NOR_MODULE_ENABLED
 

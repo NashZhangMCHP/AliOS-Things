@@ -1,9 +1,9 @@
 /*
  * Copyright (C) 2015-2018 Alibaba Group Holding Limited
  */
+#include "aos/init.h"
 #include "board.h"
-#include <aos/aos.h>
-#include <aos/kernel.h>
+#include <k_api.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -24,7 +24,9 @@ static ktask_t *g_main_task;
 
 extern void board_init(void);
 
-extern int aos_kernel_init(kinit_t *kinit);
+#ifndef AOS_BINS
+extern int application_start(int argc, char **argv);
+#endif
 
 static void sys_init(void)
 {
@@ -35,9 +37,12 @@ static void sys_init(void)
     */
     /*user_trigger_irq();*/  //for example
 
-    /*aos components init including middleware and protocol and so on 
-    jump to app entry: application_start !*/
-    aos_kernel_init(&kinit);
+    /*aos components init including middleware and protocol and so on !*/
+    aos_components_init(&kinit);
+
+    #ifndef AOS_BINS
+    application_start(kinit.argc, kinit.argv);  /* jump to app/example entry */
+    #endif
 }
 
 int main(void)
@@ -60,4 +65,3 @@ int main(void)
     /*never run here*/
     return 0;
 }
-

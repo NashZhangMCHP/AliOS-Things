@@ -2,7 +2,7 @@
  * Copyright (C) 2015-2018 Alibaba Group Holding Limited
  */
 
-#include <hal/hal.h>
+#include "aos/hal/rtc.h"
 
 #ifdef HAL_RTC_MODULE_ENABLED
 
